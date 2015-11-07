@@ -49,6 +49,7 @@ class SimpleListener(Leap.Listener):
     def onCircle(self, gesture):
         print 'Circle Occured'
 
+
 def main():
 
     listener = SimpleListener()
