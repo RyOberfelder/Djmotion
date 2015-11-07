@@ -6,7 +6,7 @@ sound = pygame.mixer.Sound("sumsad.ogg")
 
 rate = 22050
 
-arr = pygame.sndarray.array(sound)
+arr = pygame.sndarray.samples(sound)
 idx = 240000
 
 timestep = .1
@@ -14,7 +14,9 @@ timestep = .1
 steps = rate * timestep
 
 elapsed = 0
-while True:
+
+sound.play()
+while False:
     t = time.time()
     print elapsed
     sound = pygame.sndarray.make_sound(arr[idx:idx + steps])
