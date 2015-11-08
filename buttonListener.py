@@ -1,6 +1,7 @@
 import os
 import serial
 import time
+tokenlength = 30
 def child(pipeout):
   ser=serial.Serial(port='/dev/cu.usbmodem1421', baudrate=9600)
   bottles = 99
@@ -10,7 +11,7 @@ def child(pipeout):
       if ser.inWaiting() > 0:
           out += ser.read(1)
           count = count + 1
-      if out != '' and count >=6:
+      if out != '' and count >=tokenlength:
           os.write(pipeout, out)
           count = 0
           out = ''
