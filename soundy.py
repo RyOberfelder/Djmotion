@@ -123,4 +123,7 @@ def robot():
     filt = lambda x: x * np.sin(time * 200)
     
 def scratchback(n):
-    scratch.play();arr[beat*8 :] = arr[:-beat*8 ]
+    scratch.play();
+    temp = arr[:beat *n]
+    arr[beat*n :] = arr[:-beat*n ]
+    arr[:beat * -n] =temp
