@@ -126,4 +126,4 @@ def scratchback(n):
     scratch.play();
     temp = arr[:beat *n]
     arr[beat*n :] = arr[:-beat*n ]
-    arr[:beat * -n] =temp
+    arr[beat * -n:] =temp
