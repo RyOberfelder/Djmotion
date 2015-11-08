@@ -43,7 +43,7 @@ class SimpleListener(Leap.Listener):
 
     # Method to be called when type is swipe
     def onSwipe(self, gesture):
-        print 'Swipe Occured'
+        print 'Gesture Info: ' + str(gesture.frame)
 
     # Method to be called when type is circle
     def onCircle(self, gesture):
