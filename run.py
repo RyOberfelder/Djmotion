@@ -2,7 +2,8 @@ import soundy
 print 'imported soundy'
 import sys
 print 'imported sys'
-sys.path += ['/Users/ryanoberfelder/Programming/Projects/Djmotion/LeapSDK/lib',]
+sys.path += ['/home/hastings/python/Djmotion/LeapDeveloperKit_2.3.1+31549_linux/LeapSDK/lib',]
+sys.path += ['/home/hastings/python/Djmotion/LeapDeveloperKit_2.3.1+31549_linux/LeapSDK/lib/x64',]
 print 'sys path added'
 import Leap
 print 'imported leap'
@@ -31,6 +32,7 @@ class SimpleListener(Leap.Listener):
         print "Leap Motion Disconnected!"
 
     def on_frame(self, controller):
+        self.decreaseTime()
         frame = controller.frame()
         gestureList = frame.gestures()
         if frame.gestures().is_empty:
@@ -92,10 +94,11 @@ class SimpleListener(Leap.Listener):
         print 'Swipe Right'
 
     def onSwipeLeft(self, magnitude, callback):
+        print magnitude
         if self.distortTimer >= 0:
             return
         magnitude = abs(magnitude)
-        soundy.scratchback(magnitude)
+        soundy.scratchback(8)
         self.distortTimer = self.MAX_INTERVAL
         print 'Swipe Left'
 
@@ -149,26 +152,46 @@ class SimpleListener(Leap.Listener):
 tokenlength = 31
 pastState = None
 def child(pipeout):
-  ser=serial.Serial(port='/dev/cu.usbmodem1421', baudrate=9600)
+  def blockgetchar():
+    while True:
+        if ser.inWaiting() > 0:
+            return ser.read(1)
+  ser=serial.Serial(port='/dev/ttyACM1', baudrate=9600)
   bottles = 99
   count = 0
   out = ''
   while True:
+      
+      
+      
       if ser.inWaiting() > 0:
+          
           out += ser.read(1)
           count = count + 1
+          
+          
       if out != '' and count >=tokenlength: #and out[0]=='A':
-          os.write(pipeout, out)
+          os.write(pipeout, out + '\n')
           count = 0
           out = ''
+          while blockgetchar() != 'W':
+              pass
+          blockgetchar()
+          blockgetchar()
+          
+
 
 def parent():
+    global pastState, keyvalPairs
+
     pipein, pipeout = os.pipe()
     if os.fork() == 0:
         child(pipeout)
     else:
+        time.sleep(1)
         counter = 1
         while True:
+            
             verse = os.read(pipein, 117)
             print verse
             keyvalPairs = toKeyPair(verse)
@@ -182,9 +205,13 @@ def parent():
 
 def toKeyPair(rawInput):
     rawInput = sorted(rawInput.split(','))[1:]
-    keyPairing = {}
+    keyPairing = {'A': 0, 'C': 0, 'B': 0, 'E': 0, 'D': 1, 'W': 42, 'Y': 26, 'X': 112, 'Z': 86}
     for Input in rawInput:
-        keyPairing[str(Input[0])] = toDec(Input[1:])
+        if Input[1:] != '':
+            try:
+                keyPairing[str(Input[0])] = toDec(Input[1:])
+            except:
+                pass
     return keyPairing
 
 
@@ -213,16 +240,24 @@ def toDec(string):
         return int(string)
 
 def stateChange(keyValues):
+    print "stscng"
     if(pastState==None):
         return
     if(keyValues['A'] != pastState['A'] ):
-        soundy.robot()
+        if keyValues['A'] != 0:
+            soundy.robot()
+        else:
+            soundy.nofilt()
     if(keyValues['B'] != pastState['B'] ):
-        pass
-        #doB()
+        if keyValues['B'] != 0:
+            soundy.reverb()
+        else:
+            soundy.nofilt()
     if(keyValues['C'] != pastState['C'] ):
-        pass
-        #doC()
+        if keyValues['C'] != 0:
+            soundy.satan()
+        else:
+            soundy.nofilt()
     if(keyValues['D'] != pastState['D'] ):
         pass
         #doD()
@@ -233,14 +268,11 @@ def stateChange(keyValues):
         pass
         #doW()
     if(keyValues['X'] != pastState['X'] ):
-        pass
-        #doX()
+        soundy.set_high_balance(keyValues['X'] / 256.)
     if(keyValues['Y'] != pastState['Y'] ):
-        pass
-        #doY()
+        soundy.set_med_balance(keyValues['Y'] / 256.)
     if(keyValues['Z'] != pastState['Z'] ):
-        pass
-        #doZ()
+        soundy.set_low_balance(keyValues['Z'] / 256.)
 
 
 if __name__ == '__main__':

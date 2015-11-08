@@ -12,10 +12,10 @@ import numpy.fft as f
 
 rate = 22050
 
-sound = pygame.mixer.Sound("Music/Iwouldwalk500miles-TheProclaimers.ogg"); beat = 60./133 * rate
+#sound = pygame.mixer.Sound("Music/Iwouldwalk500miles-TheProclaimers.ogg"); beat = 60./133 * rate
 #sound = pygame.mixer.Sound("Music/HappyJinjoHouse-Banjo-Tooie.ogg")
 #sound = pygame.mixer.Sound("Music/sumsad.ogg");  beat = 60./122 * rate
-#sound = pygame.mixer.Sound("Music/CrazyFrog-AxelF.ogg")
+sound = pygame.mixer.Sound("Music/CrazyFrog-AxelF.ogg"); beat = 60./140 * rate
 #sound = pygame.mixer.Sound("Music/WagonWheelDariusRucker.ogg")
 
 
@@ -24,7 +24,12 @@ arr = pygame.sndarray.samples(sound)
 
 a = arr.copy()
 
+ind= np.arange(a.shape[0]/2)
 
+b = a.copy()
+
+#a[ind] = b[ind * 2]
+#a[ind + len(ind)] = b[ind * 2]
 
 timestep = 2
 
@@ -69,7 +74,7 @@ scratch = pygame.sndarray.make_sound(pygame.sndarray.array(pygame.mixer.Sound("M
 
 sound.play(loops=-1)
 
-ind= np.arange(a.shape[0]/2)
+
 
 tt = np.linspace(0, sound.get_length(), len(a))
 time = np.array((tt, tt)).transpose()
