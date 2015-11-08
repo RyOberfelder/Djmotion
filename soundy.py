@@ -10,9 +10,11 @@ import matplotlib.pyplot as plt
 
 import numpy.fft as f
 
-#sound = pygame.mixer.Sound("Music/Iwouldwalk500miles-TheProclaimers.ogg")
+rate = 22050
+
+sound = pygame.mixer.Sound("Music/Iwouldwalk500miles-TheProclaimers.ogg"); beat = 60./133 * rate
 #sound = pygame.mixer.Sound("Music/HappyJinjoHouse-Banjo-Tooie.ogg")
-sound = pygame.mixer.Sound("Music/sumsad.ogg")
+#sound = pygame.mixer.Sound("Music/sumsad.ogg");  beat = 60./122 * rate
 #sound = pygame.mixer.Sound("Music/CrazyFrog-AxelF.ogg")
 #sound = pygame.mixer.Sound("Music/WagonWheelDariusRucker.ogg")
 
@@ -25,9 +27,9 @@ a = arr.copy()
 
 
 timestep = 2
-rate = 22050
 
-beat = 60./122 * rate
+
+
 
 steps = 2*int(rate * timestep / 2)
 
@@ -132,6 +134,17 @@ def satan():
     global filt
     filt = lambda x: np.abs(x)
     doFilt()
+    
+def reverb():
+    def r(x):
+        x = x.copy()
+        for i in range(1,4):
+            x[i * 1700:] = .25 * x[:-i * 1700] + .75 * x[i * 1700:]
+        return x
+    global filt 
+    filt = r
+    doFilt()
+    
     
 def doFilt():
     arr[:] = filt(Pass)
