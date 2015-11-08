@@ -8,14 +8,6 @@ import matplotlib.pyplot as plt
 
 
 
-
-
-
-
-
-
-
-
 import numpy.fft as f
 
 #sound = pygame.mixer.Sound("Music/Iwouldwalk500miles-TheProclaimers.ogg")
@@ -73,7 +65,7 @@ med = a - high - low
 scratch = pygame.sndarray.make_sound(pygame.sndarray.array(pygame.mixer.Sound("Music/scratch.ogg"))[.5 * rate:.7 * rate])
 
 
-sound.play()
+sound.play(loops=-1)
 
 ind= np.arange(a.shape[0]/2)
 
@@ -91,39 +83,79 @@ while False:
     
     idx += steps
     
-    
+
+global low_bal    
 high_bal = 1.
 med_bal = 1.
 low_bal = 1.
 
 def set_high_balance(val):
+    global high_bal
     high_bal = val
     doPass()
 
 def set_med_balance(val):
+    
+    global med_bal
     med_bal = val
     doPass()
     
 def set_low_balance(val):
+    global low_bal
     low_bal = val
     doPass()
     
+def LFO():
+    pass
     
+global Pass 
+Pass = a.copy() 
 def doPass():
+    global Pass
     Pass = high_bal * high + med_bal * med + low_bal * low
     doFilt()
     
+global filt 
 filt = lambda x: x
 
 def nofilt():
+    global filt 
     filt = lambda x:x
     doFilt()
     
 def robot():
+    global filt
     filt = lambda x: x * np.sin(time * 200)
+    doFilt()
+    
+def satan():
+    global filt
+    filt = lambda x: np.abs(x)
+    doFilt()
+    
+def doFilt():
+    arr[:] = filt(Pass)
     
 def scratchback(n):
     scratch.play();
-    temp = arr[:beat *n]
+    temp = arr[:beat *n].copy()
     arr[beat*n :] = arr[:-beat*n ]
     arr[beat * -n:] =temp
+    
+    temp = high[:beat *n].copy()
+    high[beat*n :] = high[:-beat*n ]
+    high[beat * -n:] =temp
+    
+    temp = med[:beat *n].copy()
+    med[beat*n :] = med[:-beat*n ]
+    med[beat * -n:] =temp
+    
+    temp = low[:beat *n].copy()
+    low[beat*n :] = low[:-beat*n ]
+    low[beat * -n:] =temp
+    
+    doPass()
+    
+    
+    
+
