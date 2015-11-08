@@ -1,3 +1,8 @@
+import soundy
+import sys
+sys.path += ['C:/Users/Deven/Documents/Workspace/Djmotion/LeapSDK/lib',
+             'C:/Users/Deven/Documents/Workspace/Djmotion/LeapSDK/lib/x86']
+import Leap
 
 class SimpleListener(Leap.Listener):
 
@@ -81,6 +86,7 @@ class SimpleListener(Leap.Listener):
         if self.distortTimer >= 0:
             return
         magnitude = abs(magnitude)
+        soundy.scratchback(magnitude)
         self.distortTimer = self.MAX_INTERVAL
         print 'Swipe Left'
 
@@ -130,9 +136,7 @@ class SimpleListener(Leap.Listener):
         self.distortTimer = self.MAX_INTERVAL
         self.previousFrame = {'gesture': 'circle', 'frame': gesture.frame}
 
-
-def main():
-
+if __name__ == '__main__':
     listener = SimpleListener()
     controller = Leap.Controller()
 
@@ -145,6 +149,3 @@ def main():
         pass
     finally:
         controller.remove_listener(listener)
-
-if __name__ == '__main__':
-    main()
