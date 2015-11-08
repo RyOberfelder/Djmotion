@@ -1,5 +1,5 @@
 
-char switchList[] = "A1,B1,C1,D1,E1,Z00,Y00,X00,W00";
+char switchList[] = "A1,B1,C1,D1,E1,Z00,Y00,X00,W00,";
 int stateA = 0; 
 int stateB = 0; 
 int stateC = 0; 
